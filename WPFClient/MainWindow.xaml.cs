@@ -48,7 +48,15 @@ namespace WPFClient
                     {
                         break;
                     }
-                    Dispatcher.Invoke(() => AddMessageToChat(responseFromServer, false));
+
+                    if (responseFromServer.StartsWith("You are "))
+                    {
+                        Dispatcher.Invoke(() => AddMessageToChat(responseFromServer, false, true));
+                    }
+                    else
+                    {
+                        Dispatcher.Invoke(() => AddMessageToChat(responseFromServer, false));
+                    }
                 }
                 
             }
@@ -60,6 +68,13 @@ namespace WPFClient
                 e.Handled = true;
                 SendBtnClicked(this, new RoutedEventArgs());
             }
+            else if (e.Key == Key.Escape)
+            {
+                byte[] data = Encoding.ASCII.GetBytes("exit");
+                stream.Write(data, 0, data.Length);
+                Application.Current.Shutdown();
+                stream.Close();
+            }
         }
         private void SendBtnClicked(object sender, RoutedEventArgs e)
         {
@@ -67,7 +82,7 @@ namespace WPFClient
             if (string.IsNullOrEmpty(userInput)) return;
             if (userInput.ToLower().ToLower() == "exit")
             {
-                Application.Current.Shutdown(); 
+                Application.Current.Shutdown();
             }
             
             AddMessageToChat(userInput, true);//add the mess into ui
@@ -81,21 +96,48 @@ namespace WPFClient
             UserInput.Clear();
         }
 
-        private void AddMessageToChat(string message, bool isClient)
+        private void AddMessageToChat(string message, bool isClient, bool justConnect = false)
         {
-            TextBlock messageBlock = new TextBlock
+            TextBlock messageBlock = new TextBlock();
+            if (justConnect)
             {
-                Text = message,
-                Margin = new Thickness(5),
-                TextWrapping = TextWrapping.Wrap,
-                Background = new SolidColorBrush(Colors.LightBlue),
-                HorizontalAlignment = isClient ? HorizontalAlignment.Left : HorizontalAlignment.Right,
-                Padding = new Thickness(1),
-                MaxWidth = 300
-            };
+                messageBlock = new TextBlock
+                {
+                    Text = message,
+                    Margin = new Thickness(15),
+                    TextWrapping = TextWrapping.Wrap,
+                    Background = new SolidColorBrush(Colors.Black),
+                    Foreground = Brushes.Yellow,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Padding = new Thickness(1),
+                    MaxWidth = 300,
+                    FontSize = 10
+                };
+            }
+            else
+            {
+                messageBlock = new TextBlock
+                {
+                    Text = message,
+                    Margin = new Thickness(5),
+                    TextWrapping = TextWrapping.Wrap,
+                    Background = new SolidColorBrush(Colors.LightBlue),
+                    HorizontalAlignment = isClient ? HorizontalAlignment.Left : HorizontalAlignment.Right,
+                    Padding = new Thickness(1),
+                    MaxWidth = 300
+                };
+            }
 
             ChatDisplay.Children.Add(messageBlock);
             ChatScrollViewer.ScrollToEnd();
+        }
+
+        private void ExitBtnClicked(object sender, RoutedEventArgs e)
+        {
+            byte[] data = Encoding.ASCII.GetBytes("exit");
+            stream.Write(data, 0, data.Length);
+            Application.Current.Shutdown();
+            stream.Close();
         }
     }
 }
