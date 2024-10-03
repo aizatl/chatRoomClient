@@ -7,14 +7,20 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="300">
     <Grid>
-        <ScrollViewer x:Name="ChatScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10,10,10,65" Grid.Row="0">
+        <ScrollViewer x:Name="ChatScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10,62,10,65" Grid.Row="0">
             <StackPanel x:Name="ChatDisplay" VerticalAlignment="Top" HorizontalAlignment="Stretch">
 
             </StackPanel>
         </ScrollViewer>
 
+        <Label Content="Name:" VerticalAlignment="Top" Margin="50,2,125,0" />
+        <TextBox x:Name="clientNameTxt" VerticalAlignment="Top" Height="30" Margin="95,2,65,0" TextWrapping="Wrap" Width="auto" KeyDown="UserInput_KeyDown"/>
+        <TextBlock x:Name="errorMessage" Foreground="Red" Visibility="Collapsed" Text="Client name is compulsory!" Margin="95,37,-85,-32"/>
+        <Button x:Name="okayNameBtn" Content="Okay" Width="50" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,2,10,0" Click="OkayNameBtnSumbit"/>
         <TextBox x:Name="UserInput" VerticalAlignment="Bottom" Height="50" Margin="1,0,159,10" TextWrapping="Wrap" AcceptsReturn="False" Width="auto" KeyDown="UserInput_KeyDown"/>
         <Button x:Name="SendButton" Content="Send" Width="70" Height="50" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10" Click="SendBtnClicked"/>
         <Button x:Name="ExitButton" Content="Exit" Width="70" Height="50" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,90,10" Click="ExitBtnClicked"/>
+
+
     </Grid>
 </Window>
