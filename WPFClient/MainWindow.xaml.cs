@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace WPFClient
@@ -39,19 +40,27 @@ namespace WPFClient
         {
             byte[] buffer = new byte[1024];
             while (true)
-            {
-                int byteCount = stream.Read(buffer, 0, buffer.Length);
-                string responseFromServer = Encoding.ASCII.GetString(buffer, 0, byteCount);
+            {   if (stream != null) {
+                    int byteCount = stream.Read(buffer, 0, buffer.Length);
+                    string responseFromServer = Encoding.ASCII.GetString(buffer, 0, byteCount);
 
-                if (responseFromServer.ToLower() == "exit")
-                {
-                    Application.Current.Shutdown();
-                    break;
+                    if (responseFromServer.ToLower() == "exit")
+                    {
+                        break;
+                    }
+                    Dispatcher.Invoke(() => AddMessageToChat(responseFromServer, false));
                 }
-                Dispatcher.Invoke(() => AddMessageToChat(responseFromServer, false));
+                
             }
         }
-
+        private void UserInput_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                SendBtnClicked(this, new RoutedEventArgs());
+            }
+        }
         private void SendBtnClicked(object sender, RoutedEventArgs e)
         {
             string userInput = UserInput.Text.ToString();
